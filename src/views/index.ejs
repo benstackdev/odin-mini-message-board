@@ -1,0 +1,26 @@
+<html>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+</head>
+
+<body>
+  <h1 class="main-heading">Mini message board</h1>
+  <ul class="message-list">
+    <% messages.forEach((message)=> { %>
+      <li class="message-item">
+        <div class="message-content">
+          <%= message.user %>: <%= message.text %> (<%= message.added %>)
+                <!-- https://stackoverflow.com/questions/56301679/how-do-i-include-a-js-variable-in-an-ejs-file-in-a-get-request -->
+                <span><a href="<%= `/message/${message.id}` %>">Open</a></span>
+        </div>
+      </li>
+      <% }); %>
+  </ul>
+  <%- include("form") %>
+    <footer>Created by BenStack 2026</footer>
+</body>
+
+</html>
