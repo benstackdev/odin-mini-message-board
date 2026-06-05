@@ -12,9 +12,10 @@
     <% messages.forEach((message)=> { %>
       <li class="message-item">
         <div class="message-content">
-          <%= message.user %>: <%= message.text %> (<%= message.added %>)
-                <!-- https://stackoverflow.com/questions/56301679/how-do-i-include-a-js-variable-in-an-ejs-file-in-a-get-request -->
-                <span><a href="<%= `/message/${message.id}` %>">Open</a></span>
+          <%= message.id %>
+            <%= message.username %>: <%= message.message %> (<%= message.added %>)
+                  <!-- https://stackoverflow.com/questions/56301679/how-do-i-include-a-js-variable-in-an-ejs-file-in-a-get-request -->
+                  <span><a href="<%= `/message/${message.id}` %>">Open</a></span>
         </div>
       </li>
       <% }); %>

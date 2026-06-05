@@ -1,49 +1,27 @@
 import { format } from "date-fns";
 import { Router } from "express";
-
-type Message = {
-  id: string,
-  text: string,
-  user: string,
-  added: string;
-};
-
-const messages: Message[] = [
-  {
-    id: crypto.randomUUID(),
-    text: "Hi there!",
-    user: "Amando",
-    added: format(new Date(), "HH:mm:ss")
-  },
-  {
-    id: crypto.randomUUID(),
-    text: "Hello World!",
-    user: "Charles",
-    added: format(new Date(), "HH:mm:ss")
-  }
-];
+import { getAllMessages, getMessageById, insertMessage } from "../db/queries.js";
 
 const indexRouter = Router();
 
-indexRouter.get("/", (req, res) => {
-  res.render("index", { title: "Mini Message Board", messages: messages });
+indexRouter.get("/", async (req, res) => {
+  const allMessages = await getAllMessages();
+  res.render("index", { title: "Mini Message Board", messages: allMessages });
 });
 
-indexRouter.post("/new", (req, res) => {
-  messages.push({
-    id: crypto.randomUUID(),
-    text: req.body.messageText,
-    user: req.body.messageUser,
-    added: format(new Date(), "HH:mm:ss")
-  });
+indexRouter.post("/new", async (req, res) => {
+  const timestampFormat = "eee LLL dd yyyy HH:mm:ss OOOO";
+
+  await insertMessage(req.body.messageUser, req.body.messageText, format(new Date(), timestampFormat));
   // Redirect to same page and end req-res cycle
   res.redirect("/");
 });
 
-indexRouter.get("/message/:id", (req, res) => {
+indexRouter.get("/message/:id", async (req, res) => {
   try {
-    const msg = messages.find((message) => message.id === req.params.id);
-    if (msg) res.status(200).render("message", { message: msg });
+    const msg = await getMessageById(Number(req.params.id));
+    console.log(msg[0]);
+    if (msg) res.status(200).render("message", { message: msg[0] });
   } catch (err) {
     res.status(404).json(`Message with id ${req.params.id} not found`);
     throw (err);
